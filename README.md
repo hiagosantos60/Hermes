@@ -4,7 +4,7 @@
 
 ## ✨ Visão Geral
 
-Hermes é uma aplicação desenvolvida para facilitar o trabalho da equipe de suporte da Intelbras, automatizando **transferências de arquivos** e **consultas à tabela de phase-out** de produtos.
+Hermes é uma aplicação desenvolvida para facilitar o trabalho da equipe de suporte da Intelbras, automatizando **consultas à tabela de phase-out e a tabela de transferência** de produtos.
 
 O objetivo principal é aumentar a eficiência e a precisão no acesso às informações essenciais do ciclo de vida dos produtos, além de agilizar tarefas rotineiras.
 
