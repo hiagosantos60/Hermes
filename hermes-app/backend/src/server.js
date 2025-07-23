@@ -10,19 +10,15 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-// CSV transferência
+//CSV transferência
 const csvPath = path.resolve(__dirname, '..', 'data', 'tabela_transferencia.csv');
 
 app.get('/api/transferencia', (req, res) => {
     const results = [];
-    // If 'tabela_transferencia.csv' also has encoding issues, you might need to add { encoding: 'latin1' } here too.
-    // For now, assuming it's fine or UTF-8.
     fs.createReadStream(csvPath)
         .pipe(csv({
             separator: ';',
             mapHeaders: ({ header }) => {
-                // Map headers to a consistent, lowercase format
-                // This will convert "Segmento" to "segmento", "codigo" to "codigo", etc.
                 return header.trim().toLowerCase().replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             }
         }))
@@ -46,35 +42,30 @@ app.get('/api/transferencia', (req, res) => {
         });
 });
 
-// CSV phaseout
+//CSV phaseout
 const csvPhaseoutPath = path.resolve(__dirname, '..', 'data', 'tabela_phaseout.csv');
 
 app.get('/api/phaseout', (req, res) => {
     const results = [];
-    // Attempting 'utf8' first as 'latin1' was causing 'TELEFNICA'.
-    // If 'utf8' doesn't work for 'Nao se aplica' or 'ç', try 'latin1' again.
-    fs.createReadStream(csvPhaseoutPath, { encoding: 'utf8' }) // Changed to 'utf8'
+    fs.createReadStream(csvPhaseoutPath, { encoding: 'utf8' }) 
         .pipe(csv({
             separator: ';',
             mapHeaders: ({ header }) => {
-                // Normalize all headers: trim, lowercase, replace spaces with underscores, remove accents.
-                // This makes the mapping more robust against subtle differences.
                 const normalizedHeader = header.trim().toLowerCase()
-                                            .replace(/\s+/g, '_') // Replaces spaces with underscores
-                                            .normalize("NFD") // Decomposes accented characters
-                                            .replace(/[\u0300-\u036f]/g, ""); // Removes the accents
+                                            .replace(/\s+/g, '_') 
+                                            .normalize("NFD") 
+                                            .replace(/[\u0300-\u036f]/g, "");
 
-                // Explicitly map normalized headers to your desired keys
                 switch (normalizedHeader) {
                     case 'data_phase_out':
                         return 'data_phase_out';
                     case 'substituto_direto':
                         return 'substituto_direto';
-                    case 'descricao_sust._dir.': // Based on "Descrição Sust. Dir." -> normalized
-                        return 'descricao_subs_dir'; // Renamed to match your desired output key
-                    case 'substituto_indicacao': // Based on "Substituto Indicacao" -> normalized
+                    case 'descricao_sust._dir.': 
+                        return 'descricao_subs_dir'; 
+                    case 'substituto_indicacao': 
                         return 'substituto_indicacao';
-                    case 'descricao_subs._ind.': // Based on "Descrição Subs. Ind." -> normalized
+                    case 'descricao_subs._ind.': 
                         return 'descricao_subs_ind';
                     case 'unidade':
                         return 'unidade';
@@ -82,30 +73,25 @@ app.get('/api/phaseout', (req, res) => {
                         return 'segmento';
                     case 'item':
                         return 'item';
-                    case 'descricao': // Maps "Descrição" -> "descricao"
+                    case 'descricao': 
                         return 'descricao';
                     case 'modelo':
                         return 'modelo';
                     default:
-                        // If a header doesn't match a specific case, use its normalized form as the key.
                         return normalizedHeader;
                 }
             }
         }))
         .on('data', (data) => {
-            // Log the raw data object from csv-parser for debugging
-            // console.log('Raw CSV data row:', data);
 
             const formattedData = {
                 unidade: data.unidade || '',
                 segmento: data.segmento || '',
                 item: data.item || '',
-                // Ensure 'descricao' is mapped correctly from the normalized header
                 descricao: data.descricao || '',
                 modelo: data.modelo || '',
                 data_phase_out: data.data_phase_out || '',
                 substituto_direto: data.substituto_direto || '',
-                // Ensure these are mapped from their *normalized* header names
                 descricao_subs_dir: data.descricao_subs_dir || '',
                 substituto_indicacao: data.substituto_indicacao || '',
                 descricao_subs_ind: data.descricao_subs_ind || ''
@@ -123,5 +109,5 @@ app.get('/api/phaseout', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
 });

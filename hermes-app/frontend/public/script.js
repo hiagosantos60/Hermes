@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Search Logic ---
+    // --- Lógica de busca ---
     function performSearch() {
         const searchTerm = searchInput.value.toLowerCase().trim();
         if (searchTerm === '') {
