@@ -22,5 +22,6 @@ O objetivo principal é aumentar a eficiência e a precisão no acesso às infor
 - **CSV Parser**
 - **CORS**
 - **HTML/CSS**
+- **NGINX** -> Hospedar e distribuir a utilização do projeto para as equipes do suporte
 
 ### Projeto realizado em conjunto com **https://github.com/cauagaliza**
